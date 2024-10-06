@@ -2,20 +2,14 @@ import Header from '@components/header/header.tsx';
 import {placeCardsAmsterdamMock, placeCardsCologneMock} from './favorites.const.ts';
 import PlaceCardCities from '@components/place-card/place-card.favorites.tsx';
 import Footer from '@components/footer/footer.tsx';
-import {PlaceCardProps} from '@components/place-card/place-card.props.ts';
 
-type Location = {
-  name: string;
-  places: PlaceCardProps[];
-}
+const locationsMock = [
+  {name: 'Amsterdam', places: placeCardsAmsterdamMock},
+  {name: 'Cologne', places: placeCardsCologneMock},
+];
 
 function Favorites(): JSX.Element {
-  const places: Location[] = [
-    {name: 'Amsterdam', places: placeCardsAmsterdamMock},
-    {name: 'Cologne', places: placeCardsCologneMock},
-  ];
-
-  const isEmptyPage = places.length === 0;
+  const isEmptyPage = locationsMock.length === 0;
   return (
     <div className={`page ${isEmptyPage && 'page--favorites-empty'}`}>
       <Header />
@@ -35,7 +29,7 @@ function Favorites(): JSX.Element {
                 <h1 className="favorites__title">Saved listing</h1>
                 <ul className="favorites__list">
                   {
-                    places.map((loc) =>
+                    locationsMock.map((loc) =>
                       (
                         <li key={loc.name} className="favorites__locations-items">
                           <div className="favorites__locations locations locations--current">
