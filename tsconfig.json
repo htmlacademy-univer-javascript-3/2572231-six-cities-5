@@ -22,7 +22,10 @@
     "forceConsistentCasingInFileNames": true,
 
     "paths": {
-      "@components/*": ["./src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@type/*": ["./src/type/*"],
+      "@const/*": ["./src/const/*"],
+      "@pages/*": ["./src/pages/*"],
     }
   },
   "include": ["src", "vite.config.ts"],
