@@ -30,8 +30,14 @@ function App(): JSX.Element {
             </PrivateRoute>
           }
         />
-        <Route path={AppRoute.Offer} element={<Offer />} />
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path={AppRoute.Offer}
+          element={<Offer />}
+        />
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
       </Routes>
     </BrowserRouter>
   );
