@@ -1,12 +1,16 @@
-import {placeCardsMock} from './main.const.ts';
-import PlaceCardCities from '@components/place-card/place-card.cities.tsx';
 import Header from '@components/header/header.tsx';
+import {Offer} from '@type/offers.ts';
+import {OffersList} from '@components/offers-list/offers-list.main.tsx';
 
-function Main(): JSX.Element {
-  const isEmptyPage = placeCardsMock.length === 0;
+type mainProps = {
+  offers: Offer[];
+}
+
+function Main({offers}: mainProps): JSX.Element {
+  const isEmptyPage = offers.length === 0;
   return (
     <div className={`page page--gray page--main ${isEmptyPage && 'page__main--index-empty'}`}>
-      <Header />
+      <Header/>
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
@@ -52,7 +56,9 @@ function Main(): JSX.Element {
                 <section className="cities__no-places">
                   <div className="cities__status-wrapper tabs__content">
                     <b className="cities__status">No places to stay available</b>
-                    <p className="cities__status-description">We could not find any property available at the moment in Dusseldorf</p>
+                    <p className="cities__status-description">We could not find any property available at the moment in
+                      Dusseldorf
+                    </p>
                   </div>
                 </section>
                 <div className="cities__right-section"></div>
@@ -77,11 +83,7 @@ function Main(): JSX.Element {
                       <li className="places__option" tabIndex={0}>Top rated first</li>
                     </ul>
                   </form>
-                  <div className="cities__places-list places__list tabs__content">
-                    {
-                      placeCardsMock.map((pc) => PlaceCardCities(pc))
-                    }
-                  </div>
+                  <OffersList offers={offers}/>
                 </section>
                 <div className="cities__right-section">
                   <section className="cities__map map"></section>
