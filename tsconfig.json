@@ -26,6 +26,7 @@
       "@type/*": ["./src/type/*"],
       "@const/*": ["./src/const/*"],
       "@pages/*": ["./src/pages/*"],
+      "@mocks/*": ["./src/mocks/*"],
     }
   },
   "include": ["src", "vite.config.ts"],

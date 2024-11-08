@@ -9,34 +9,39 @@ import Favorites from '@pages/favorites/favorites.tsx';
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
 import {AuthorizationStatus} from '@type/authorization-status.ts';
+import {Offer as Offer_} from '@type/offers.ts';
 
-function App(): JSX.Element {
+type AppProps = {
+  offers: Offer_[];
+}
+
+function App({offers}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Main}
-          element={<Main/>}
+          element={<Main offers={offers}/>}
         />
         <Route
           path={AppRoute.Login}
-          element={<Login />}
+          element={<Login/>}
         />
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-              <Favorites />
+            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+              <Favorites offers={offers}/>
             </PrivateRoute>
           }
         />
         <Route
-          path={AppRoute.Offer}
-          element={<Offer />}
+          path={`${AppRoute.Offer}/:id`}
+          element={<Offer/>}
         />
         <Route
           path="*"
-          element={<NotFound />}
+          element={<NotFound/>}
         />
       </Routes>
     </BrowserRouter>

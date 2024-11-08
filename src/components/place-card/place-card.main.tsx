@@ -13,17 +13,17 @@ export type PlaceCardProps = {
 export function PlaceCard(props: PlaceCardProps): JSX.Element {
   const {offer, onMouseEnter, onMouseLeave} = props;
   return (
-    <article className="favorites__card place-card" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+    <article className="cities__card place-card" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       {offer.isPremium &&
         <div className="place-card__mark">
           <span>Premium</span>
         </div>}
-      <div className="favorites__image-wrapper place-card__image-wrapper">
+      <div className="cities__image-wrapper place-card__image-wrapper">
         <Link to={`${AppRoute.Offer}/${offer.id}`}>
-          <img className="place-card__image" src={offer.imagePath} width="150" height="110" alt="Place image"/>
+          <img className="place-card__image" src={offer.imagePath} width="260" height="200" alt="Place image"/>
         </Link>
       </div>
-      <div className="favorites__card-info place-card__info">
+      <div className="place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{offer.price}</b>
