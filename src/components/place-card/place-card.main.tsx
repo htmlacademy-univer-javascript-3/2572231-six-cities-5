@@ -29,9 +29,9 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <BookMarkButton isActive={offer.isFavorite} />
+          <BookMarkButton isActive={offer.isFavorite}/>
         </div>
-        <Rating ratingValue={offer.rating} />
+        <Rating ratingValue={offer.rating}/>
         <h2 className="place-card__name">
           <Link to={`${AppRoute.Offer}/${offer.id}`}>{offer.title}</Link>
         </h2>
