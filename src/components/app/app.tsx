@@ -9,13 +9,14 @@ import Favorites from '@pages/favorites/favorites.tsx';
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
 import {AuthorizationStatus} from '@type/authorization-status.ts';
-import {Offer as Offer_} from '@type/offers.ts';
+import {Offer as Offer_, Review} from '@type/offers.ts';
 
 type AppProps = {
   offers: Offer_[];
+  offerReviews: Review[];
 }
 
-function App({offers}: AppProps): JSX.Element {
+function App({offers, offerReviews}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
@@ -37,7 +38,7 @@ function App({offers}: AppProps): JSX.Element {
         />
         <Route
           path={`${AppRoute.Offer}/:id`}
-          element={<Offer/>}
+          element={<Offer reviews={offerReviews} offer={offers[0]} nearbyOffers={offers.slice(1)}/>}
         />
         <Route
           path="*"

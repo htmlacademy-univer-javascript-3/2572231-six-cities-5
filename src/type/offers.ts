@@ -1,4 +1,4 @@
-import {City, Location} from '@type/common.ts';
+import {City, Location, User} from '@type/common.ts';
 
 export enum OfferType {
   Apartment = 'Apartment',
@@ -16,4 +16,12 @@ export type Offer = {
   imagePath: string;
   city: City;
   location: Location;
+};
+
+export type Review = {
+  id: string;
+  date: Date;
+  user: User;
+  text: string;
+  rating: number;
 };
