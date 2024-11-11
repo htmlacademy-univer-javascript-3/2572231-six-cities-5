@@ -1,6 +1,7 @@
 import Header from '@components/header/header.tsx';
 import {Offer} from '@type/offers.ts';
 import {OffersList} from '@components/offers-list/offers-list.main.tsx';
+import {Map} from '@components/map/map.tsx';
 
 type mainProps = {
   offers: Offer[];
@@ -86,7 +87,11 @@ function Main({offers}: mainProps): JSX.Element {
                   <OffersList offers={offers}/>
                 </section>
                 <div className="cities__right-section">
-                  <section className="cities__map map"></section>
+                  <Map
+                    city={offers[0].city}
+                    offers={offers}
+                    selectedOfferId={'1'}
+                  />
                 </div>
               </div>
           }
