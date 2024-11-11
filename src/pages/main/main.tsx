@@ -3,11 +3,11 @@ import {Offer} from '@type/offers.ts';
 import {OffersList} from '@components/offers-list/offers-list.main.tsx';
 import {Map} from '@components/map/map.tsx';
 
-type mainProps = {
+type MainProps = {
   offers: Offer[];
 }
 
-function Main({offers}: mainProps): JSX.Element {
+function Main({offers}: MainProps): JSX.Element {
   const isEmptyPage = offers.length === 0;
   return (
     <div className={`page page--gray page--main ${isEmptyPage && 'page__main--index-empty'}`}>

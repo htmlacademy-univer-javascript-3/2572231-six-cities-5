@@ -3,11 +3,11 @@ import Footer from '@components/footer/footer.tsx';
 import {Offer} from '@type/offers.ts';
 import {OffersList} from '@components/offers-list/offers-list.favorites.tsx';
 
-type favoritesProps = {
+type FavoritesProps = {
   offers: Offer[];
 }
 
-function Favorites({offers}: favoritesProps): JSX.Element {
+function Favorites({offers}: FavoritesProps): JSX.Element {
   const isEmptyPage = offers.length === 0;
 
   return (
