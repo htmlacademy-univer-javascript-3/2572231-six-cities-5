@@ -1,17 +1,21 @@
 import Header from '@components/header/header.tsx';
 import {ReviewForm} from '@components/review/review-form.tsx';
 import {ReviewsList} from '@components/review/reviews-list.tsx';
-import {Offer as OfferT, Review} from '@type/offers.ts';
 import {Map} from '@components/map/map.offer.tsx';
 import {OffersList} from '@components/offers-list/offers-list.near-places.tsx';
+import {useAppSelector} from '@hooks/index.ts';
+import {useParams} from 'react-router-dom';
 
-type OfferProps = {
-  reviews: Review[];
-  offer: OfferT;
-  nearbyOffers: OfferT[];
-}
+function Offer(): JSX.Element {
+  const offers = useAppSelector((state) => state.offersList);
+  const reviews = useAppSelector((state) => state.reviews);
 
-function Offer({reviews, offer, nearbyOffers}: OfferProps): JSX.Element {
+  const params = useParams<{id: string}>();
+  const offer = offers.find((o) => o.id === params.id) ?? offers[0];
+  const nearbyOffers = offers.filter(
+    (o) => o.city.name === offer.city.name && o.id !== offer.id
+  ).sort((o) => o.rating).slice(0, 3);
+
   return (
     <div className="page">
       <Header/>

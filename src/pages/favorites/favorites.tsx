@@ -1,13 +1,11 @@
 import Header from '@components/header/header.tsx';
 import Footer from '@components/footer/footer.tsx';
-import {Offer} from '@type/offers.ts';
 import {OffersList} from '@components/offers-list/offers-list.favorites.tsx';
+import {useAppSelector} from '@hooks/index.ts';
 
-type FavoritesProps = {
-  offers: Offer[];
-}
-
-function Favorites({offers}: FavoritesProps): JSX.Element {
+function Favorites(): JSX.Element {
+  const offers = useAppSelector((state) => state.offersList);
+  const favorites = offers.filter((offer) => offer.isFavorite);
   const isEmptyPage = offers.length === 0;
 
   return (
@@ -29,7 +27,7 @@ function Favorites({offers}: FavoritesProps): JSX.Element {
               :
               <section className="favorites">
                 <h1 className="favorites__title">Saved listing</h1>
-                <OffersList offers={offers}/>
+                <OffersList offers={favorites}/>
               </section>
           }
         </div>

@@ -20,6 +20,8 @@ export default defineConfig({
       '@const': `${path.resolve(__dirname, 'src')}/const`,
       '@pages': `${path.resolve(__dirname, 'src')}/pages`,
       '@mocks': `${path.resolve(__dirname, 'src')}/mocks`,
+      '@store': `${path.resolve(__dirname, 'src')}/store`,
+      '@hooks': `${path.resolve(__dirname, 'src')}/hooks`,
     }
   }
 });

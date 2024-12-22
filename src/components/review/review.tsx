@@ -19,11 +19,6 @@ function Rating({ratingValue}: {ratingValue: number}): JSX.Element {
 export function Review({ review }: ReviewItemProps): JSX.Element {
   const { user, rating, text, date } = review;
 
-  const formattedDate = date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-  });
-
   return (
     <li className="reviews__item">
       <div className="reviews__user user">
@@ -41,7 +36,7 @@ export function Review({ review }: ReviewItemProps): JSX.Element {
       <div className="reviews__info">
         <Rating ratingValue={rating}/>
         <p className="reviews__text">{text}</p>
-        <time className="reviews__time" dateTime={date.toString()}>{formattedDate}</time>
+        <time className="reviews__time" dateTime={date}>{date}</time>
       </div>
     </li>
   );
