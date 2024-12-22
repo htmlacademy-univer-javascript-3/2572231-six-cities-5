@@ -4,7 +4,7 @@ import {Review} from '@type/offers.ts';
 export const reviews: Review[] = [
   {
     id: '1',
-    date: new Date('2019-04-24'),
+    date: '2019-04-24',
     user: {
       name: 'Max',
       avatarImgPath: 'img/avatar-max.jpg',
@@ -14,7 +14,7 @@ export const reviews: Review[] = [
   },
   {
     id: '2',
-    date: new Date('2024-11-11'),
+    date: '2024-11-11',
     user: {
       name: '𝓐𝓷𝓰𝓮𝓵𝓲𝓷𝓪🦖',
       avatarImgPath: 'img/avatar-angelina.jpg',

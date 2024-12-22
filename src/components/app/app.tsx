@@ -9,20 +9,23 @@ import Favorites from '@pages/favorites/favorites.tsx';
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
 import {AuthorizationStatus} from '@type/authorization-status.ts';
-import {Offer as Offer_, Review} from '@type/offers.ts';
+import {setOffers, setReviews} from '@store/action.ts';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
 
-type AppProps = {
-  offers: Offer_[];
-  offerReviews: Review[];
-}
 
-function App({offers, offerReviews}: AppProps): JSX.Element {
+function App(): JSX.Element {
+  const offers = useAppSelector((state) => state.offersList);
+  const reviews = useAppSelector((state) => state.reviews);
+  const dispatch = useAppDispatch();
+  dispatch(setOffers(offers));
+  dispatch(setReviews(reviews));
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Main}
-          element={<Main offers={offers}/>}
+          element={<Main/>}
         />
         <Route
           path={AppRoute.Login}
@@ -32,13 +35,13 @@ function App({offers, offerReviews}: AppProps): JSX.Element {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-              <Favorites offers={offers}/>
+              <Favorites/>
             </PrivateRoute>
           }
         />
         <Route
           path={`${AppRoute.Offer}/:id`}
-          element={<Offer reviews={offerReviews} offer={offers[0]} nearbyOffers={offers.slice(1)}/>}
+          element={<Offer/>}
         />
         <Route
           path="*"

@@ -1,13 +1,18 @@
 import {Offer} from '@type/offers.ts';
 import {PlaceCard} from '@components/place-card/place-card.main.tsx';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 type OffersListProps = {
   offers: Offer[];
+  onActiveOfferChange: (offerId: string | null) => void;
 };
 
-export function OffersList({offers}: OffersListProps): JSX.Element {
-  const [, setActiveOfferId] = useState<string | null>(null);
+export function OffersList({offers, onActiveOfferChange}: OffersListProps): JSX.Element {
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+
+  useEffect(() => {
+    onActiveOfferChange(activeOfferId);
+  }, [activeOfferId, onActiveOfferChange]);
 
   return (
     <div className="cities__places-list places__list tabs__content">

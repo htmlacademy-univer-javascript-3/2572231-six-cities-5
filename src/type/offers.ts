@@ -20,7 +20,7 @@ export type Offer = {
 
 export type Review = {
   id: string;
-  date: Date;
+  date: string;
   user: User;
   text: string;
   rating: number;
