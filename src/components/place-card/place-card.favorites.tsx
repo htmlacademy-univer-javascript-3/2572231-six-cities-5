@@ -20,7 +20,7 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
         </div>}
       <div className="favorites__image-wrapper place-card__image-wrapper">
         <Link to={`${AppRoute.Offer}/${offer.id}`}>
-          <img className="place-card__image" src={offer.imagePath} width="150" height="110" alt="Place image"/>
+          <img className="place-card__image" src={offer.previewImage} width="150" height="110" alt="Place image"/>
         </Link>
       </div>
       <div className="favorites__card-info place-card__info">

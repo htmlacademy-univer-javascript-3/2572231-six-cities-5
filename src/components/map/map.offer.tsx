@@ -32,14 +32,14 @@ export function Map({offer, nearbyOffers}: MapProps): JSX.Element {
       const markerLayer = layerGroup().addTo(map);
       nearbyOffers.forEach((offer_) => {
         const marker = new Marker({
-          lat: offer_.location.lt,
-          lng: offer_.location.lg
+          lat: offer_.location.latitude,
+          lng: offer_.location.longitude
         });
         marker.setIcon(defaultCustomIcon).addTo(map);
       });
       const marker = new Marker({
-        lat: offer.location.lt,
-        lng: offer.location.lg
+        lat: offer.location.latitude,
+        lng: offer.location.longitude
       });
       marker.setIcon(currentCustomIcon).addTo(map);
 

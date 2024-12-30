@@ -34,8 +34,8 @@ export function Map({city, offers, selectedOfferId}: MapProps): JSX.Element {
       const markerLayer = layerGroup().addTo(map);
       offers.forEach((offer) => {
         const marker = new Marker({
-          lat: offer.location.lt,
-          lng: offer.location.lg
+          lat: offer.location.latitude,
+          lng: offer.location.longitude,
         });
         marker
           .setIcon(

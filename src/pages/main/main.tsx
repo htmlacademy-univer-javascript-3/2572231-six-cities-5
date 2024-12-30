@@ -9,21 +9,17 @@ import {useEffect, useState} from 'react';
 import SortForm, {SortType} from '@pages/main/sort-selection-form.tsx';
 
 function Main(): JSX.Element {
-  const offers = useAppSelector((state) => state.offersList);
+  const offers = useAppSelector((state) => state.offers);
   const city = useAppSelector((state) => state.city);
 
   const [visibleOffers, setVisibleOffers] = useState<Offer[]>(offers);
-  const [sortedOffers, setSortedOffers] = useState<Offer[]>(visibleOffers);
+  const [selectedSort, setSelectedSort] = useState(SortType.Popular);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   const activeOffer = offers.find((offer) => offer.id === activeOfferId);
   useEffect(() => {
     const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
-    setVisibleOffers(filteredOffers);
-  }, [city, offers]);
-
-  const handleSortChange = (selectedSort: string) => {
-    let sortedOffers = [...visibleOffers];
+    let sortedOffers = [...filteredOffers];
     switch (selectedSort) {
       case SortType.PriceASC:
         sortedOffers.sort((a, b) => a.price - b.price);
@@ -35,10 +31,14 @@ function Main(): JSX.Element {
         sortedOffers.sort((a, b) => b.rating - a.rating);
         break;
       case SortType.Popular:
-        sortedOffers = [...visibleOffers];
+        sortedOffers = [...filteredOffers];
         break;
     }
-    setSortedOffers(sortedOffers);
+    setVisibleOffers(sortedOffers);
+  }, [city, offers, selectedSort]);
+
+  const handleSortChange = (selectedSort: SortType) => {
+    setSelectedSort(selectedSort)
   };
 
   const isEmptyPage = offers.length === 0;
@@ -70,14 +70,14 @@ function Main(): JSX.Element {
               <div className="cities__places-container container">
                 <section className="cities__places places">
                   <h2 className="visually-hidden">Places</h2>
-                  <b className="places__found">{`${sortedOffers.length} places to stay in ${city}`}</b>
+                  <b className="places__found">{`${visibleOffers.length} places to stay in ${city.name}`}</b>
                   <SortForm onSortChange={handleSortChange} />
-                  <OffersList offers={sortedOffers} onActiveOfferChange={setActiveOfferId}/>
+                  <OffersList offers={visibleOffers} onActiveOfferChange={setActiveOfferId}/>
                 </section>
                 <div className="cities__right-section">
                   <Map
                     city={city}
-                    offers={sortedOffers}
+                    offers={visibleOffers}
                     selectedOfferId={activeOffer?.id}
                   />
                 </div>

@@ -4,7 +4,7 @@ import {OffersList} from '@components/offers-list/offers-list.favorites.tsx';
 import {useAppSelector} from '@hooks/index.ts';
 
 function Favorites(): JSX.Element {
-  const offers = useAppSelector((state) => state.offersList);
+  const offers = useAppSelector((state) => state.offers);
   const favorites = offers.filter((offer) => offer.isFavorite);
   const isEmptyPage = offers.length === 0;
 

@@ -13,7 +13,7 @@ export type Offer = {
   price: number;
   rating: number;
   title: string;
-  imagePath: string;
+  previewImage: string;
   city: City;
   location: Location;
 };

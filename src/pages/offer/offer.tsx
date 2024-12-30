@@ -7,7 +7,7 @@ import {useAppSelector} from '@hooks/index.ts';
 import {useParams} from 'react-router-dom';
 
 function Offer(): JSX.Element {
-  const offers = useAppSelector((state) => state.offersList);
+  const offers = useAppSelector((state) => state.offers);
   const reviews = useAppSelector((state) => state.reviews);
 
   const params = useParams<{id: string}>();

@@ -10,7 +10,7 @@ export enum SortType {
 const SortTypes: SortType[] = Object.values(SortType)
 
 type SortFormProps = {
-  onSortChange: (sortingType: string) => void;
+  onSortChange: (sortingType: SortType) => void;
 }
 
 function SortForm({onSortChange}: SortFormProps): JSX.Element {
