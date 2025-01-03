@@ -1,7 +1,7 @@
 export function BookMarkButton({isActive}: {isActive: boolean}): JSX.Element {
   return (
     isActive ?
-      <button className="place-card__bookmark-button {isActive ? place-card__bookmark-button--active button" type="button">
+      <button className="place-card__bookmark-button place-card__bookmark-button--active button" type="button">
         <svg className="place-card__bookmark-icon" width="18" height="19">
           <use xlinkHref="#icon-bookmark"></use>
         </svg>

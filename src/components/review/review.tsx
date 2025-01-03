@@ -17,7 +17,7 @@ function Rating({ratingValue}: {ratingValue: number}): JSX.Element {
 }
 
 export function Review({ review }: ReviewItemProps): JSX.Element {
-  const { user, rating, text, date } = review;
+  const { user, rating, comment, date } = review;
 
   return (
     <li className="reviews__item">
@@ -25,7 +25,7 @@ export function Review({ review }: ReviewItemProps): JSX.Element {
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
           <img
             className="reviews__avatar user__avatar"
-            src={user.avatarImgPath}
+            src={user.avatarUrl}
             width="54"
             height="54"
             alt="Reviews avatar"
@@ -35,7 +35,7 @@ export function Review({ review }: ReviewItemProps): JSX.Element {
       </div>
       <div className="reviews__info">
         <Rating ratingValue={rating}/>
-        <p className="reviews__text">{text}</p>
+        <p className="reviews__text">{comment}</p>
         <time className="reviews__time" dateTime={date}>{date}</time>
       </div>
     </li>

@@ -1,23 +1,33 @@
 import Header from '@components/header/header.tsx';
-import {Offer} from '@type/offers.ts';
-import {OffersList} from '@components/offers-list/offers-list.main.tsx';
-import {Map} from '@components/map/map.tsx';
-import {useAppSelector} from '@hooks/index.ts';
-import {CitiesList} from '@components/cities-list/cities-list.tsx';
-import {Cities} from '@mocks/cities.ts';
-import {useEffect, useState} from 'react';
+import OffersList from '@components/offers-list/offers-list.main.tsx';
+import Map from '@components/map/map.tsx';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import CitiesList from '@components/cities-list/cities-list.tsx';
+import {Cities} from '@const/cities';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import SortForm, {SortType} from '@pages/main/sort-selection-form.tsx';
+import {getOffers} from '@store/api-actions.ts';
+import {citySelector} from '@store/main-page-data/selectors.ts';
+import {offersLoadingSelector, offersSelector} from '@store/offers-data/selectors.ts';
+import Spinner from '@components/spinner/spinner.tsx';
+
 
 function Main(): JSX.Element {
-  const offers = useAppSelector((state) => state.offers);
-  const city = useAppSelector((state) => state.city);
+  console.log("Main rendered")
+  const dispatch = useAppDispatch()
 
-  const [visibleOffers, setVisibleOffers] = useState<Offer[]>(offers);
+  useEffect(() => {
+    dispatch(getOffers())
+  }, [])
+
+  const offers = useAppSelector(offersSelector);
+  const city = useAppSelector(citySelector);
+
   const [selectedSort, setSelectedSort] = useState(SortType.Popular);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
-  const activeOffer = offers.find((offer) => offer.id === activeOfferId);
-  useEffect(() => {
+  const onActiveOfferChange = useCallback((offerId: string | null) => setActiveOfferId(offerId), []);
+  const visibleOffers = useMemo(() => {
     const filteredOffers = offers.filter((offer) => offer.city.name === city.name);
     let sortedOffers = [...filteredOffers];
     switch (selectedSort) {
@@ -34,14 +44,19 @@ function Main(): JSX.Element {
         sortedOffers = [...filteredOffers];
         break;
     }
-    setVisibleOffers(sortedOffers);
+    console.log(city, offers, selectedSort);
+
+    return sortedOffers;
   }, [city, offers, selectedSort]);
 
   const handleSortChange = (selectedSort: SortType) => {
     setSelectedSort(selectedSort)
   };
 
-  const isEmptyPage = offers.length === 0;
+
+  const isOffersLoading = useAppSelector(offersLoadingSelector);
+  const isEmptyPage = visibleOffers.length === 0;
+
   return (
     <div className={`page page--gray page--main ${isEmptyPage && 'page__main--index-empty'}`}>
       <Header/>
@@ -54,13 +69,16 @@ function Main(): JSX.Element {
         </div>
         <div className="cities">
           {
+            isOffersLoading ?
+              <Spinner/>
+            :
             isEmptyPage ?
               <div className="cities__places-container cities__places-container--empty container">
                 <section className="cities__no-places">
                   <div className="cities__status-wrapper tabs__content">
                     <b className="cities__status">No places to stay available</b>
-                    <p className="cities__status-description">We could not find any property available at the moment in
-                      Dusseldorf
+                    <p className="cities__status-description">{`We could not find any property available at the moment in
+                      ${city.name}`}
                     </p>
                   </div>
                 </section>
@@ -72,13 +90,13 @@ function Main(): JSX.Element {
                   <h2 className="visually-hidden">Places</h2>
                   <b className="places__found">{`${visibleOffers.length} places to stay in ${city.name}`}</b>
                   <SortForm onSortChange={handleSortChange} />
-                  <OffersList offers={visibleOffers} onActiveOfferChange={setActiveOfferId}/>
+                  <OffersList offers={visibleOffers} onActiveOfferChange={onActiveOfferChange}/>
                 </section>
                 <div className="cities__right-section">
                   <Map
                     city={city}
                     offers={visibleOffers}
-                    selectedOfferId={activeOffer?.id}
+                    selectedOfferId={activeOfferId}
                   />
                 </div>
               </div>

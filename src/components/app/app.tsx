@@ -8,10 +8,10 @@ import Favorites from '@pages/favorites/favorites.tsx';
 
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
-import {AuthorizationStatus} from '@type/authorization-status.ts';
 
 
 function App(): JSX.Element {
+  console.log("App rendered")
   return (
     <BrowserRouter>
       <Routes>
@@ -26,7 +26,7 @@ function App(): JSX.Element {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+            <PrivateRoute>
               <Favorites/>
             </PrivateRoute>
           }
@@ -44,4 +44,4 @@ function App(): JSX.Element {
   );
 }
 
-      export default App;
+export default App;

@@ -1,6 +1,6 @@
-import {useEffect, useRef} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import {Icon, layerGroup, Marker} from 'leaflet';
-import {City} from '@type/common.ts';
+import {City} from '@type/location.ts';
 import 'leaflet/dist/leaflet.css';
 import {Offer} from '@type/offers.ts';
 import {URL_MARKER_CURRENT, URL_MARKER_DEFAULT} from '@const/sources.ts';
@@ -9,7 +9,7 @@ import {useMap} from '@components/map/useMap.ts';
 type MapProps = {
   city: City;
   offers: Offer[];
-  selectedOfferId?: string;
+  selectedOfferId: string | null;
 };
 
 
@@ -25,7 +25,8 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40]
 });
 
-export function Map({city, offers, selectedOfferId}: MapProps): JSX.Element {
+function Map({city, offers, selectedOfferId}: MapProps): JSX.Element {
+  console.log("Map rendered", city)
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
@@ -56,3 +57,5 @@ export function Map({city, offers, selectedOfferId}: MapProps): JSX.Element {
     <div className="cities__map map" style={{height: '500px'}} ref={mapRef}></div>
   );
 }
+
+export default memo(Map);

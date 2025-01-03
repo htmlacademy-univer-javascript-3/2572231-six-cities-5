@@ -1,12 +1,13 @@
 import { useAppDispatch } from '@hooks/index';
-import { setCity } from '@store/action';
-import {City} from '@type/common.ts';
+import {City} from '@type/location.ts';
+import {setCity} from '@store/main-page-data/main-page-data.ts';
+import {memo} from 'react';
 
 type CitiesListProps = {
   cities: City[];
 };
 
-export function CitiesList({ cities }: CitiesListProps): JSX.Element {
+function CitiesList({ cities }: CitiesListProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const handleCityChange = (city: City) => {
@@ -29,3 +30,5 @@ export function CitiesList({ cities }: CitiesListProps): JSX.Element {
     </ul>
   );
 }
+
+export default memo(CitiesList)

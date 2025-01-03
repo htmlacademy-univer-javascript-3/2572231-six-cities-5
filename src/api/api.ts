@@ -1,8 +1,11 @@
-import axios, {AxiosInstance, InternalAxiosRequestConfig} from 'axios';
+import axios, {AxiosError, AxiosInstance, InternalAxiosRequestConfig} from 'axios';
 import { getToken } from './token';
 
 const BASE_URL = 'https://14.design.htmlacademy.pro/six-cities';
 const REQUEST_TIMEOUT = 5000;
+
+class DetailMessageType {
+}
 
 export const createAPI = (): AxiosInstance => {
   const api = axios.create({
@@ -20,6 +23,14 @@ export const createAPI = (): AxiosInstance => {
 
       return config;
     },
+  );
+
+  api.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError<DetailMessageType>) => {
+      console.error(error)
+      throw error;
+    }
   );
 
   return api;
