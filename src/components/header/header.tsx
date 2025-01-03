@@ -1,15 +1,16 @@
 import {memo} from 'react';
 import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
-import {favoritesCountSelector} from '@store/offers-data/selectors.ts';
 import {authStatusSelector, userSelector} from '@store/user-data/selectors.ts';
 import {logout} from '@store/api-actions.ts';
 import {Auth} from '@type/auth.ts';
 import {Link} from 'react-router-dom';
 import {AppRoute} from '@const/app-routes.ts';
+import {favoritesSelector} from '@store/offers-data/selectors.ts';
 
 function Header(): JSX.Element {
   const dispatch = useAppDispatch();
-  const favoritesCount = useAppSelector(favoritesCountSelector);
+  const favorites = useAppSelector(favoritesSelector);
+  const favoritesCount = favorites.length;
   const user = useAppSelector(userSelector);
   const authStatus = useAppSelector(authStatusSelector);
 

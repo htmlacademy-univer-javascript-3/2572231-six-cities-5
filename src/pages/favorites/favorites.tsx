@@ -1,12 +1,28 @@
 import Header from '@components/header/header.tsx';
 import Footer from '@components/footer/footer.tsx';
 import {OffersList} from '@components/offers-list/offers-list.favorites.tsx';
-import {useAppSelector} from '@hooks/index.ts';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {
+  favoriteOffersLoadingErrorSelector,
+  favoritesSelector,
+  isFavoriteOffersLoadingSelector
+} from '@store/offers-data/selectors.ts';
+import {useEffect} from 'react';
+import {getFavoriteOffers} from '@store/api-actions.ts';
+import Spinner from '@components/spinner/spinner.tsx';
+import {Alert} from '@components/alert/alert.tsx';
 
 function Favorites(): JSX.Element {
-  const offers = useAppSelector((state) => state.offers);
-  const favorites = offers.filter((offer) => offer.isFavorite);
-  const isEmptyPage = offers.length === 0;
+  const favorites = useAppSelector(favoritesSelector);
+  const isFavoriteOffersLoading = useAppSelector(isFavoriteOffersLoadingSelector);
+  const favoriteOffersLoadingError = useAppSelector(favoriteOffersLoadingErrorSelector);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getFavoriteOffers());
+  }, []);
+
+  const isEmptyPage = favorites.length === 0;
 
   return (
     <div className={`page ${isEmptyPage && 'page--favorites-empty'}`}>
@@ -14,6 +30,8 @@ function Favorites(): JSX.Element {
       <main className={`page__main page__main--favorites ${isEmptyPage && 'page__main--favorites-empty'}`}>
         <div className="page__favorites-container container">
           {
+            isFavoriteOffersLoading ?
+            <Spinner/> :
             isEmptyPage ?
               <section className="favorites favorites--empty">
                 <h1 className="visually-hidden">Favorites (empty)</h1>
@@ -30,6 +48,7 @@ function Favorites(): JSX.Element {
                 <OffersList offers={favorites}/>
               </section>
           }
+          {favoriteOffersLoadingError && <Alert message={favoriteOffersLoadingError}/>}
         </div>
       </main>
       <Footer/>

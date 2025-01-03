@@ -3,7 +3,7 @@ export type BookMarkButtonProps = {
   onClick: () => void;
 }
 
-export function BookMarkButton({isActive, onClick}: BookMarkButtonProps): JSX.Element {
+export function BookmarkButton({isActive, onClick}: BookMarkButtonProps): JSX.Element {
   return (
     isActive ?
       <button className="offer__bookmark-button offer__bookmark-button--active button" type="button" onClick={onClick}>

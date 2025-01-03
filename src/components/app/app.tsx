@@ -8,10 +8,27 @@ import Favorites from '@pages/favorites/favorites.tsx';
 
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
+import {checkAuth, getFavoriteOffers} from '@store/api-actions.ts';
+import {useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {userSelector} from '@store/user-data/selectors.ts';
 
 
 function App(): JSX.Element {
-  console.log("App rendered")
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(userSelector);
+
+  useEffect(() => {
+    dispatch(checkAuth())
+  }, []);
+
+  useEffect(() => {
+    if (user !== null)
+    {
+      dispatch(getFavoriteOffers());
+    }
+  }, [user]);
+
   return (
     <BrowserRouter>
       <Routes>

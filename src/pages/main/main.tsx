@@ -10,15 +10,17 @@ import {getOffers} from '@store/api-actions.ts';
 import {citySelector} from '@store/main-page-data/selectors.ts';
 import {offersLoadingSelector, offersSelector} from '@store/offers-data/selectors.ts';
 import Spinner from '@components/spinner/spinner.tsx';
+import {userSelector} from '@store/user-data/selectors.ts';
 
 
 function Main(): JSX.Element {
-  console.log("Main rendered")
   const dispatch = useAppDispatch()
+
+  const user = useAppSelector(userSelector);
 
   useEffect(() => {
     dispatch(getOffers())
-  }, [])
+  }, [user])
 
   const offers = useAppSelector(offersSelector);
   const city = useAppSelector(citySelector);
@@ -44,7 +46,6 @@ function Main(): JSX.Element {
         sortedOffers = [...filteredOffers];
         break;
     }
-    console.log(city, offers, selectedSort);
 
     return sortedOffers;
   }, [city, offers, selectedSort]);

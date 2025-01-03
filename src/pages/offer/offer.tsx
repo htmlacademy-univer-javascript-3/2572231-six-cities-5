@@ -21,7 +21,7 @@ import {getNearbyOffers, getOffer, getReviews, updateFavoriteStatus} from '@stor
 import Spinner from '@components/spinner/spinner.tsx';
 import {Alert} from '@components/alert/alert.tsx';
 import OfferGallery from '@pages/offer/offer-gallery.tsx';
-import {BookMarkButton} from '@pages/offer/bookmark.tsx';
+import {BookmarkButton} from '@pages/offer/bookmark.tsx';
 import {authStatusSelector} from '@store/user-data/selectors.ts';
 import {Auth} from '@type/auth.ts';
 import {AppRoute} from '@const/app-routes.ts';
@@ -30,7 +30,6 @@ import {setOfferInfo, setOfferInfoLoading} from '@store/offer-data/offer-data.ts
 const MAX_NEARBY_OFFERS = 3;
 
 function Offer(): JSX.Element {
-  console.log("Offer rendered")
   const offerId = useParams<{id: string}>().id;
 
   if (!offerId) {
@@ -74,7 +73,6 @@ function Offer(): JSX.Element {
   const memoizedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS), [nearbyOffers, offer]);
 
   if (isOfferLoading) {
-    console.log("SPINNER")
     return (
     <div className="page">
       <Header/>
@@ -126,7 +124,7 @@ function Offer(): JSX.Element {
                 <h1 className="offer__name">
                   {offer.title}
                 </h1>
-                <BookMarkButton isActive={offer.isFavorite} onClick={handleFavoriteClick}></BookMarkButton>
+                <BookmarkButton isActive={offer.isFavorite} onClick={handleFavoriteClick}></BookmarkButton>
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
@@ -177,7 +175,9 @@ function Offer(): JSX.Element {
                   reviewsLoadingError ? <Alert message={reviewsLoadingError}/> :
                   <ReviewsList reviews={reviews}/>
                 }
-                <ReviewForm/>
+                {
+                  authStatus === Auth.Auth && <ReviewForm/>
+                }
               </section>
             </div>
           </div>
