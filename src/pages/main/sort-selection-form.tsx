@@ -1,21 +1,16 @@
-import {useState} from 'react';
+import {memo, useState} from 'react';
+import {SortType} from '@type/main-page.ts';
 
-export enum SortType {
-  Popular = 'Popular',
-  PriceASC = 'Price: low to high',
-  PriceDESC = 'Price: high to low',
-  TopRated = 'Top rated first',
-}
-
-const SortTypes: SortType[] = Object.values(SortType)
+const SortTypes: SortType[] = Object.values(SortType);
 
 type SortFormProps = {
-  onSortChange: (sortingType: string) => void;
+  onSortChange: (sortingType: SortType) => void;
+  defaultSortType: SortType;
 }
 
-function SortForm({onSortChange}: SortFormProps): JSX.Element {
+function SortForm({onSortChange, defaultSortType}: SortFormProps): JSX.Element {
   const [isActive, setIsActive] = useState(false);
-  const [selectedSort, setSelectedSort] = useState(SortType.Popular);
+  const [selectedSort, setSelectedSort] = useState(defaultSortType);
 
   const handleSortSelection = (option: SortType) => {
     setSelectedSort(option);
@@ -54,4 +49,5 @@ function SortForm({onSortChange}: SortFormProps): JSX.Element {
   );
 }
 
-export default SortForm;
+const SortFormMemo = memo(SortForm);
+export default SortFormMemo;

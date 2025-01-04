@@ -3,160 +3,197 @@ import {ReviewForm} from '@components/review/review-form.tsx';
 import {ReviewsList} from '@components/review/reviews-list.tsx';
 import {Map} from '@components/map/map.offer.tsx';
 import {OffersList} from '@components/offers-list/offers-list.near-places.tsx';
-import {useAppSelector} from '@hooks/index.ts';
-import {useParams} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {useNavigate, useParams} from 'react-router-dom';
+import NotFound from '@pages/not-found/not-found.tsx';
+import {
+  isNearbyOffersLoadingSelector,
+  isOfferInfoLoadingSelector,
+  isReviewsLoadingSelector,
+  nearbyOffersLoadingErrorSelector,
+  nearbyOffersSelector,
+  offerInfoLoadingErrorSelector,
+  offerInfoSelector,
+  reviewsLoadingErrorSelector,
+  reviewsSelector
+} from '@store/offer-data/selectors.ts';
+import {useEffect, useMemo} from 'react';
+import {getNearbyOffers, getOffer, getReviews, updateFavoriteStatus} from '@store/api-actions.ts';
+import Spinner from '@components/spinner/spinner.tsx';
+import {Alert} from '@components/alert/alert.tsx';
+import OfferGallery from '@pages/offer/offer-gallery.tsx';
+import {BookmarkButton} from '@pages/offer/bookmark.tsx';
+import {authStatusSelector} from '@store/user-data/selectors.ts';
+import {Auth} from '@type/auth.ts';
+import {AppRoute} from '@const/app-routes.ts';
+import {setOfferInfo, setOfferInfoLoading} from '@store/offer-data/offer-data.ts';
+
+const MAX_NEARBY_OFFERS = 3;
 
 function Offer(): JSX.Element {
-  const offers = useAppSelector((state) => state.offersList);
-  const reviews = useAppSelector((state) => state.reviews);
+  const offerId = useParams<{ id: string }>().id;
 
-  const params = useParams<{id: string}>();
-  const offer = offers.find((o) => o.id === params.id) ?? offers[0];
-  const nearbyOffers = offers.filter(
-    (o) => o.city.name === offer.city.name && o.id !== offer.id
-  ).sort((o) => o.rating).slice(0, 3);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  return (
-    <div className="page">
-      <Header/>
-      <main className="page__main page__main--offer">
+  useEffect(() => {
+    if (offerId === undefined) {
+      return;
+    }
+
+    dispatch(getOffer(offerId));
+    dispatch(setOfferInfoLoading(true));
+    dispatch(getReviews(offerId));
+    dispatch(getNearbyOffers(offerId));
+  }, [dispatch, offerId]);
+
+  const offer = useAppSelector(offerInfoSelector);
+  const isOfferLoading = useAppSelector(isOfferInfoLoadingSelector);
+  const offerLoadingError = useAppSelector(offerInfoLoadingErrorSelector);
+  const reviews = useAppSelector(reviewsSelector);
+  const isReviewsLoading = useAppSelector(isReviewsLoadingSelector);
+  const reviewsLoadingError = useAppSelector(reviewsLoadingErrorSelector);
+  const nearbyOffers = useAppSelector(nearbyOffersSelector);
+  const isNearbyOffersLoading = useAppSelector(isNearbyOffersLoadingSelector);
+  const nearbyOffersLoadingError = useAppSelector(nearbyOffersLoadingErrorSelector);
+  const authStatus = useAppSelector(authStatusSelector);
+  const memoizedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS), [nearbyOffers]);
+
+  const handleFavoriteClick = () => {
+    if (authStatus !== Auth.Auth) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    if (offer === null) {
+      return; // unreachable
+    }
+    dispatch(updateFavoriteStatus({id: offer.id, isFavorite: !offer.isFavorite}));
+    dispatch(setOfferInfo({...offer, isFavorite: !offer.isFavorite}));
+  };
+
+  let content: JSX.Element;
+
+
+  if (isOfferLoading) {
+    content = <Spinner/>;
+  } else if (offerLoadingError) {
+    content = <Alert message={offerLoadingError}/>;
+  } else if (offer === null) {
+    content = <NotFound/>;
+  } else {
+    const ratingPercentage = `${(Math.round(offer.rating) * 20)}%`;
+
+    let reviewsContent: JSX.Element;
+    if (isReviewsLoading) {
+      reviewsContent = <Spinner/>;
+    } else if (reviewsLoadingError) {
+      reviewsContent = <Alert message={reviewsLoadingError}/>;
+    } else {
+      reviewsContent = <ReviewsList reviews={reviews}/>;
+    }
+
+    let nearbyOffersContent: JSX.Element;
+    if (isNearbyOffersLoading) {
+      nearbyOffersContent = <Spinner/>;
+    } else if (nearbyOffersLoadingError) {
+      nearbyOffersContent = <Alert message={nearbyOffersLoadingError}/>;
+    } else {
+      nearbyOffersContent = <OffersList offers={memoizedNearbyOffers}/>;
+    }
+
+    content = (
+      <>
         <section className="offer">
-          <div className="offer__gallery-container container">
-            <div className="offer__gallery">
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/room.jpg" alt="Photo studio"/>
-              </div>
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/apartment-01.jpg" alt="Photo studio"/>
-              </div>
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/apartment-02.jpg" alt="Photo studio"/>
-              </div>
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/apartment-03.jpg" alt="Photo studio"/>
-              </div>
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/studio-01.jpg" alt="Photo studio"/>
-              </div>
-              <div className="offer__image-wrapper">
-                <img className="offer__image" src="img/apartment-01.jpg" alt="Photo studio"/>
-              </div>
-            </div>
-          </div>
+          <OfferGallery images={offer.images}/>
           <div className="offer__container container">
             <div className="offer__wrapper">
-              <div className="offer__mark">
-                <span>Premium</span>
-              </div>
+              {
+                offer.isPremium && (
+                  <div className="offer__mark">
+                    <span>Premium</span>
+                  </div>
+                )
+              }
               <div className="offer__name-wrapper">
                 <h1 className="offer__name">
-                  Beautiful &amp; luxurious studio at great location
+                  {offer.title}
                 </h1>
-                <button className="offer__bookmark-button button" type="button">
-                  <svg className="offer__bookmark-icon" width="31" height="33">
-                    <use xlinkHref="#icon-bookmark"></use>
-                  </svg>
-                  <span className="visually-hidden">To bookmarks</span>
-                </button>
+                <BookmarkButton isActive={offer.isFavorite} onClick={handleFavoriteClick}></BookmarkButton>
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{width: '80%'}}></span>
+                  <span style={{width: ratingPercentage}}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="offer__rating-value rating__value">4.8</span>
+                <span className="offer__rating-value rating__value">{offer.rating}</span>
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  Apartment
+                  {offer.type[0].toUpperCase() + offer.type.slice(1)}
                 </li>
-                <li className="offer__feature offer__feature--bedrooms">
-                  3 Bedrooms
-                </li>
-                <li className="offer__feature offer__feature--adults">
-                  Max 4 adults
-                </li>
+                <li className="offer__feature offer__feature--bedrooms">{offer.bedrooms} Bedrooms</li>
+                <li className="offer__feature offer__feature--adults">Max {offer.maxAdults} adults</li>
               </ul>
               <div className="offer__price">
-                <b className="offer__price-value">&euro;120</b>
+                <b className="offer__price-value">&euro;{offer.price}</b>
                 <span className="offer__price-text">&nbsp;night</span>
               </div>
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  <li className="offer__inside-item">
-                    Wi-Fi
-                  </li>
-                  <li className="offer__inside-item">
-                    Washing machine
-                  </li>
-                  <li className="offer__inside-item">
-                    Towels
-                  </li>
-                  <li className="offer__inside-item">
-                    Heating
-                  </li>
-                  <li className="offer__inside-item">
-                    Coffee machine
-                  </li>
-                  <li className="offer__inside-item">
-                    Baby seat
-                  </li>
-                  <li className="offer__inside-item">
-                    Kitchen
-                  </li>
-                  <li className="offer__inside-item">
-                    Dishwasher
-                  </li>
-                  <li className="offer__inside-item">
-                    Cabel TV
-                  </li>
-                  <li className="offer__inside-item">
-                    Fridge
-                  </li>
+                  {offer.goods.map((good) => (
+                    <li className="offer__inside-item" key={good}>
+                      {good}
+                    </li>))}
                 </ul>
               </div>
               <div className="offer__host">
                 <h2 className="offer__host-title">Meet the host</h2>
                 <div className="offer__host-user user">
-                  <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
-                    <img className="offer__avatar user__avatar" src="img/avatar-angelina.jpg" width="74" height="74"
-                      alt="Host avatar"
-                    />
+                  <div className={`offer__avatar-wrapper ${offer.host.isPro ? 'offer__avatar-wrapper--pro' : 'user__avatar-wrapper'}`}>
+                    <img className="offer__avatar user__avatar" src={offer.host.avatarUrl} width="74" height="74" alt="Host avatar"/>
                   </div>
                   <span className="offer__user-name">
-                    Angelina
+                    {offer.host.name}
                   </span>
-                  <span className="offer__user-status">
-                    Pro
-                  </span>
+                  {offer.host.isPro && <span className="offer__user-status">Pro</span>}
                 </div>
                 <div className="offer__description">
                   <p className="offer__text">
-                    A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The
-                    building is green and from 18th century.
-                  </p>
-                  <p className="offer__text">
-                    An independent House, strategically located between Rembrand Square and National Opera, but where
-                    the bustle of the city comes to rest in this alley flowery and colorful.
+                    {offer.description}
                   </p>
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
-                <ReviewsList reviews={reviews}/>
-                <ReviewForm/>
+                <h2 className="reviews__title">Reviews &middot;
+                  <span className="reviews__amount">
+                    {reviews.length}
+                  </span>
+                </h2>
+                {reviewsContent}
+                {
+                  authStatus === Auth.Auth && <ReviewForm offerId={offer.id}/>
+                }
               </section>
             </div>
           </div>
-          <Map offer={offer} nearbyOffers={nearbyOffers}/>
+          <Map offer={offer} nearbyOffers={memoizedNearbyOffers}/>
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OffersList offers={nearbyOffers}/>
+            {nearbyOffersContent}
           </section>
         </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="page">
+      <Header/>
+      <main className="page__main page__main--offer">
+        {content}
       </main>
     </div>
   );

@@ -8,17 +8,26 @@ import Favorites from '@pages/favorites/favorites.tsx';
 
 import {AppRoute} from '@const/app-routes.ts';
 import {PrivateRoute} from '@components/private-route/private-route.tsx';
-import {AuthorizationStatus} from '@type/authorization-status.ts';
-import {setOffers, setReviews} from '@store/action.ts';
+import {checkAuth, getFavoriteOffers} from '@store/api-actions.ts';
+import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {authStatusSelector} from '@store/user-data/selectors.ts';
+import {Auth} from '@type/auth.ts';
 
 
 function App(): JSX.Element {
-  const offers = useAppSelector((state) => state.offersList);
-  const reviews = useAppSelector((state) => state.reviews);
   const dispatch = useAppDispatch();
-  dispatch(setOffers(offers));
-  dispatch(setReviews(reviews));
+  const authStatus = useAppSelector(authStatusSelector);
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (authStatus === Auth.Auth) {
+      dispatch(getFavoriteOffers());
+    }
+  }, [dispatch, authStatus]);
 
   return (
     <BrowserRouter>
@@ -34,7 +43,7 @@ function App(): JSX.Element {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+            <PrivateRoute>
               <Favorites/>
             </PrivateRoute>
           }

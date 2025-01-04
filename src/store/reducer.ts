@@ -1,33 +1,13 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { setOffers, setCity, setReviews } from './action';
-import { Offer } from '@type/offers.ts';
-import {offers} from '@mocks/offers';
-import { Review } from '@type/offers';
-import { reviews } from '@mocks/reviews';
-import {City} from '@type/common.ts';
-import {ParisCity} from '@mocks/cities.ts';
+import {combineReducers} from '@reduxjs/toolkit';
+import {userData} from '@store/user-data/user-data.ts';
+import {offersData} from '@store/offers-data/offers-data.ts';
+import {offerData} from '@store/offer-data/offer-data.ts';
+import {mainPageData} from '@store/main-page-data/main-page-data.ts';
+import {Namespace} from '@store/namespace.ts';
 
-type StateType = {
-  city: City;
-  offersList: Offer[];
-  reviews: Review[];
-};
-
-const initialState: StateType = {
-  city: ParisCity,
-  offersList: [],
-  reviews: [],
-};
-
-export const reducer = createReducer(initialState, (builder) => {
-  builder
-    .addCase(setCity, (state, { payload }) => {
-      state.city = payload;
-    })
-    .addCase(setOffers, (state) => {
-      state.offersList = offers;
-    })
-    .addCase(setReviews, (state) => {
-      state.reviews = reviews;
-    });
+export const reducer = combineReducers({
+  [Namespace.User]: userData.reducer,
+  [Namespace.Offers]: offersData.reducer,
+  [Namespace.MainPage]: mainPageData.reducer,
+  [Namespace.Offer]: offerData.reducer,
 });

@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+      <link rel="stylesheet" href="public/css/extended.css" type = "text/css" />
       <App/>
     </Provider>
   </React.StrictMode>

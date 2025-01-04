@@ -1,7 +1,12 @@
-import {BookMarkButton, Rating} from '@components/place-card/common.tsx';
+import {BookmarkButton, Rating} from '@components/place-card/common.tsx';
 import {Offer} from '@type/offers.ts';
 import {AppRoute} from '@const/app-routes.ts';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {authStatusSelector} from '@store/user-data/selectors.ts';
+import {useState} from 'react';
+import {Auth} from '@type/auth.ts';
+import {updateFavoriteStatus} from '@store/api-actions.ts';
 
 
 export type PlaceCardProps = {
@@ -11,7 +16,25 @@ export type PlaceCardProps = {
 }
 
 export function PlaceCard(props: PlaceCardProps): JSX.Element {
-  const {offer, onMouseEnter, onMouseLeave} = props;
+  const {onMouseEnter, onMouseLeave} = props;
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authStatus = useAppSelector(authStatusSelector);
+
+  const [offer, setOffer] = useState(props.offer);
+
+  const handleFavoriteClick = () => {
+    if (authStatus !== Auth.Auth) {
+      navigate(AppRoute.Login);
+      return;
+    }
+    if (offer === null) {
+      return; // unreachable
+    }
+    dispatch(updateFavoriteStatus({id: offer.id, isFavorite: !offer.isFavorite}));
+    setOffer({...offer, isFavorite: !offer.isFavorite});
+  };
+
   return (
     <article className="favorites__card place-card" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       {offer.isPremium &&
@@ -20,7 +43,7 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
         </div>}
       <div className="favorites__image-wrapper place-card__image-wrapper">
         <Link to={`${AppRoute.Offer}/${offer.id}`}>
-          <img className="place-card__image" src={offer.imagePath} width="150" height="110" alt="Place image"/>
+          <img className="place-card__image" src={offer.previewImage} width="150" height="110" alt="Place image"/>
         </Link>
       </div>
       <div className="favorites__card-info place-card__info">
@@ -29,7 +52,7 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <BookMarkButton isActive={offer.isFavorite}/>
+          <BookmarkButton isActive={offer.isFavorite} onClick={handleFavoriteClick}/>
         </div>
         <Rating ratingValue={offer.rating}/>
         <h2 className="place-card__name">
