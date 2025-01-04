@@ -8,9 +8,10 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 import SortForm, {SortType} from '@pages/main/sort-selection-form.tsx';
 import {getOffers} from '@store/api-actions.ts';
 import {citySelector} from '@store/main-page-data/selectors.ts';
-import {offersLoadingSelector, offersSelector} from '@store/offers-data/selectors.ts';
+import {offersLoadingErrorSelector, offersLoadingSelector, offersSelector} from '@store/offers-data/selectors.ts';
 import Spinner from '@components/spinner/spinner.tsx';
 import {userSelector} from '@store/user-data/selectors.ts';
+import {Alert} from '@components/alert/alert.tsx';
 
 
 function Main(): JSX.Element {
@@ -56,6 +57,7 @@ function Main(): JSX.Element {
 
 
   const isOffersLoading = useAppSelector(offersLoadingSelector);
+  const offersLoadingError = useAppSelector(offersLoadingErrorSelector);
   const isEmptyPage = visibleOffers.length === 0;
 
   return (
@@ -70,9 +72,8 @@ function Main(): JSX.Element {
         </div>
         <div className="cities">
           {
-            isOffersLoading ?
-              <Spinner/>
-            :
+            isOffersLoading ? <Spinner/> :
+            offersLoadingError ? <Alert message={offersLoadingError}/> :
             isEmptyPage ?
               <div className="cities__places-container cities__places-container--empty container">
                 <section className="cities__no-places">

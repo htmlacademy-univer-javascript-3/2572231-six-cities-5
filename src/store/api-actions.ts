@@ -22,7 +22,6 @@ export const getOffers = createAsyncThunk<Offer[], undefined, {
   'offers/get',
   async (_arg, {extra: api}) => {
     const response = await api.get<Offer[]>(APIRoute.Offers);
-    console.log("request to offers")
     return response.data
   },
 );
@@ -47,7 +46,6 @@ export const getNearbyOffers = createAsyncThunk<Offer[], string, {
   'offers/getNearby',
   async (id, {extra: api}) => {
     const response = await api.get<Offer[]>(`${APIRoute.Offers}/${id}/nearby`);
-    console.log("Nearby offers: ", response.data)
     return response.data
   },
 );
@@ -62,6 +60,17 @@ export const getReviews = createAsyncThunk<Review[], string, {
     const response = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
     return response.data
   },
+);
+
+export const addReview = createAsyncThunk<Review, {offerId: string, comment: string, rating: number}, {
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'comments/add',
+  async ({comment, rating, offerId}, {extra: api}) => {
+    const {data} = await api.post<Review>(`comments/${offerId}`, {comment: comment, rating: rating});
+    return data;
+  }
 );
 
 export const getFavoriteOffers = createAsyncThunk<Offer[], undefined, {
@@ -108,8 +117,12 @@ export const logout = createAsyncThunk<void, undefined, {
 }>(
   'user/logout',
   async (_arg, {extra: api}) => {
-    await api.delete(APIRoute.Logout);
-    dropToken();
+    try {
+      await api.delete(APIRoute.Logout);
+    }
+    finally {
+      dropToken();
+    }
   },
 );
 

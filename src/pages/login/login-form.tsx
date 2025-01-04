@@ -1,16 +1,13 @@
 import {ChangeEvent, FormEvent, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {useAppDispatch} from '@hooks/index.ts';
 import {getOffers, login} from '@store/api-actions.ts';
-import {setLoginError} from '@store/user-data/user-data.ts';
-import {loginErrorSelector} from '@store/user-data/selectors.ts';
 import {useNavigate} from 'react-router-dom';
 import {AppRoute} from '@const/app-routes.ts';
 
 export function LoginForm(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const loginError = useAppSelector(loginErrorSelector);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const changeEmail = (event: ChangeEvent<HTMLInputElement>) =>
     setEmail(event.target.value);
@@ -22,8 +19,9 @@ export function LoginForm(): JSX.Element {
   const navigate = useNavigate();
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    setLoginError(null);
     evt.preventDefault();
-    if (/[a-z0-9]/.test(password)) {
+    if (/[a-z]/.test(password) && /[0-9]/.test(password)) {
       dispatch(login({
         email: email,
         password: password,
@@ -36,11 +34,11 @@ export function LoginForm(): JSX.Element {
       )
       .catch(
         (error) => {
-          dispatch(setLoginError(error.message));
+          setLoginError(error.message);
         }
       );
     } else {
-      dispatch(setLoginError('Password must contain at least one letter and one number'));
+      setLoginError('Password must contain at least one letter and one number');
     }
   };
 

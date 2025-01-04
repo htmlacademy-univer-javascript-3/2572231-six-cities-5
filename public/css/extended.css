@@ -21,10 +21,7 @@
 
 .alert {
   color: red;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 10px;
   padding: 10px;
   border: 1px solid red;
   border-radius: 5px;
@@ -32,15 +29,29 @@
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  color: red;
+  display: flex;
+  height: fit-content;
+  flex-grow: 1;
+  justify-content: center;
 }
 
 .login__error {
   color: #f64747;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 20px 10px 10px;
   text-align: center;
   font-size: 16px;
-  }
+}
+
+.review-send__error {
+  color: #f64747;
+  margin: 20px 10px 10px;
+  text-align: center;
+  font-size: 16px;
+}
+
+fieldset {
+  border: 0;
+  padding: 0.01em 0 0 0;
+  margin: 0;
+  min-width: 0;
+}

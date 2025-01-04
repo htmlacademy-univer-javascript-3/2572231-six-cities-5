@@ -176,7 +176,7 @@ function Offer(): JSX.Element {
                   <ReviewsList reviews={reviews}/>
                 }
                 {
-                  authStatus === Auth.Auth && <ReviewForm/>
+                  authStatus === Auth.Auth && <ReviewForm offerId={offer.id}/>
                 }
               </section>
             </div>

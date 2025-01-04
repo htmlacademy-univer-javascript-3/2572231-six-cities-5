@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Namespace } from '@store/namespace.ts';
 import {Offer, OfferExtendedInfo, Review} from '@type/offers.ts';
-import {getNearbyOffers, getOffer, getReviews} from '@store/api-actions.ts';
+import {addReview, getNearbyOffers, getOffer, getReviews} from '@store/api-actions.ts';
 
 
 export type OfferData = {
@@ -14,6 +14,7 @@ export type OfferData = {
     offerInfoLoadingError: string | null;
     reviewsLoadingError: string | null;
     nearbyOffersLoadingError: string | null;
+    isReviewFormActive: boolean;
 };
 
 const initialState: OfferData = {
@@ -26,6 +27,7 @@ const initialState: OfferData = {
     offerInfoLoadingError: null,
     reviewsLoadingError: null,
     nearbyOffersLoadingError: null,
+    isReviewFormActive: true,
 };
 
 export const offerData = createSlice({
@@ -49,6 +51,9 @@ export const offerData = createSlice({
         },
         setNearbyOffersLoading: (state, action: PayloadAction<boolean>) => {
             state.isNearbyOffersLoading = action.payload;
+        },
+        setReviewFormActive: (state, action: PayloadAction<boolean>) => {
+            state.isReviewFormActive = action.payload;
         },
     },
     extraReducers(builder) {
@@ -88,7 +93,17 @@ export const offerData = createSlice({
             state.nearbyOffersLoadingError = action.error.message || 'Failed to fetch nearby offers';
             state.isNearbyOffersLoading = false;
         });
+        builder.addCase(addReview.pending, (state) => {
+            state.isReviewFormActive = false;
+        });
+        builder.addCase(addReview.fulfilled, (state, action) => {
+            state.isReviewFormActive = true;
+            state.reviews = [...state.reviews, action.payload];
+        });
+        builder.addCase(addReview.rejected, (state) => {
+            state.isReviewFormActive = true;
+        });
     },
 });
 
-export const {setOfferInfo, setReviews, setNearbyOffers, setOfferInfoLoading, setReviewsLoading, setNearbyOffersLoading} = offerData.actions;
+export const {setOfferInfo, setReviews, setOfferInfoLoading, setReviewsLoading, setNearbyOffersLoading} = offerData.actions;
