@@ -20,15 +20,14 @@ function App(): JSX.Element {
   const authStatus = useAppSelector(authStatusSelector);
 
   useEffect(() => {
-    dispatch(checkAuth())
-  }, []);
+    dispatch(checkAuth());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (authStatus == Auth.Auth)
-    {
+    if (authStatus === Auth.Auth) {
       dispatch(getFavoriteOffers());
     }
-  }, [authStatus]);
+  }, [dispatch, authStatus]);
 
   return (
     <BrowserRouter>

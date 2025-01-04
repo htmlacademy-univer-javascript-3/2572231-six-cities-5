@@ -60,5 +60,3 @@ export const offersData = createSlice({
     });
   },
 });
-
-export const {} = offersData.actions;

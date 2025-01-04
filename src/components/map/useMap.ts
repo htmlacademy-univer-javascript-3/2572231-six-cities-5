@@ -36,7 +36,7 @@ export function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City)
         city.location.zoom
       );
     }
-  }, [mapRef, city]);
+  }, [map, mapRef, city]);
 
   return map;
 }

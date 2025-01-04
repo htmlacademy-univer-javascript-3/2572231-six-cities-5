@@ -26,17 +26,16 @@ export function LoginForm(): JSX.Element {
         email: email,
         password: password,
       })).unwrap()
-      .then(
-        () => {
-          dispatch(getOffers());
-          navigate(AppRoute.Main);
-        },
-      )
-      .catch(
-        (error) => {
-          setLoginError(error.message);
+        .then(
+          () => {
+            dispatch(getOffers());
+            navigate(AppRoute.Main);
+          },
+        )
+        .catch((err: {message: string}) => {
+          setLoginError(err.message);
         }
-      );
+        );
     } else {
       setLoginError('Password must contain at least one letter and one number');
     }

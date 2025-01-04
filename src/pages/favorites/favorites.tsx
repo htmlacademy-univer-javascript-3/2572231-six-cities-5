@@ -20,34 +20,42 @@ function Favorites(): JSX.Element {
 
   useEffect(() => {
     dispatch(getFavoriteOffers());
-  }, []);
+  }, [dispatch]);
 
   const isEmptyPage = favorites.length === 0;
+
+  let content: JSX.Element;
+  if (isFavoriteOffersLoading) {
+    content = <Spinner/>;
+  } else if (isEmptyPage){
+    content = (
+      <section className="favorites favorites--empty">
+        <h1 className="visually-hidden">Favorites (empty)</h1>
+        <div className="favorites__status-wrapper">
+          <b className="favorites__status">Nothing yet saved.</b>
+          <p className="favorites__status-description">Save properties to narrow down search or plan your
+          future
+          trips.
+          </p>
+        </div>
+      </section>
+    );
+  } else {
+    content = (
+      <section className="favorites">
+        <h1 className="favorites__title">Saved listing</h1>
+        <OffersList offers={favorites}/>
+      </section>
+    );
+  }
+
 
   return (
     <div className={`page ${isEmptyPage && 'page--favorites-empty'}`}>
       <Header/>
       <main className={`page__main page__main--favorites ${isEmptyPage && 'page__main--favorites-empty'}`}>
         <div className="page__favorites-container container">
-          {
-            isFavoriteOffersLoading ?
-            <Spinner/> :
-            isEmptyPage ?
-              <section className="favorites favorites--empty">
-                <h1 className="visually-hidden">Favorites (empty)</h1>
-                <div className="favorites__status-wrapper">
-                  <b className="favorites__status">Nothing yet saved.</b>
-                  <p className="favorites__status-description">Save properties to narrow down search or plan your future
-                    trips.
-                  </p>
-                </div>
-              </section>
-              :
-              <section className="favorites">
-                <h1 className="favorites__title">Saved listing</h1>
-                <OffersList offers={favorites}/>
-              </section>
-          }
+          {content}
           {favoriteOffersLoadingError && <Alert message={favoriteOffersLoadingError}/>}
         </div>
       </main>

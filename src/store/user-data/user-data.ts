@@ -30,7 +30,7 @@ export const userData = createSlice({
     builder.addCase(checkAuth.fulfilled, (state, action) => {
       if (action.payload === null) {
         state.authStatus = Auth.NoAuth;
-        return
+        return;
       }
       state.authStatus = Auth.Auth;
       state.user = action.payload;
@@ -49,6 +49,3 @@ export const userData = createSlice({
     });
   },
 });
-
-
-export const {} = userData.actions;

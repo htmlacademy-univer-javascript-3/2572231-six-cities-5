@@ -24,7 +24,7 @@ function CitiesList({ cities }: CitiesListProps): JSX.Element {
           className="locations__item"
           onClick={() => handleCityChange(city)}
         >
-          <a className={`locations__item-link tabs__item ${currentCity.name == city.name ? "tabs__item--active" : ""}`} href="#">
+          <a className={`locations__item-link tabs__item ${currentCity.name === city.name ? 'tabs__item--active' : ''}`} href="#">
             <span>{city.name}</span>
           </a>
         </li>
@@ -33,4 +33,5 @@ function CitiesList({ cities }: CitiesListProps): JSX.Element {
   );
 }
 
-export default memo(CitiesList)
+const CitiesListMemo = memo(CitiesList);
+export default CitiesListMemo;

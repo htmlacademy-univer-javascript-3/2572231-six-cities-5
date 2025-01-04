@@ -20,9 +20,9 @@ function Login(): JSX.Element {
     if (authStatus === Auth.Auth) {
       navigate(AppRoute.Main);
     }
-  }, [authStatus]);
+  }, [navigate, authStatus]);
 
-  const cityToShow = useMemo(() => availableCities[Math.floor(Math.random() * availableCities.length)], []);
+  const cityToShow = useMemo(() => availableCities[Math.floor(Math.random() * availableCities.length)], [availableCities]);
 
   return (
     <div className="page page--gray page--login">
@@ -35,7 +35,10 @@ function Login(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to={AppRoute.Main} onClick={() => {dispatch(setCity(cityToShow))}}>
+              <Link className="locations__item-link" to={AppRoute.Main} onClick={() => {
+                dispatch(setCity(cityToShow));
+              }}
+              >
                 <span>{cityToShow.name}</span>
               </Link>
             </div>

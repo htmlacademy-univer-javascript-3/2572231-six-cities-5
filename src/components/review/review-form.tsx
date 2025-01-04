@@ -13,7 +13,8 @@ function RatingInput({stars, title, changeHandler}: RatingInputProps) {
   return (
     <>
       <input className="form__rating-input visually-hidden" onChange={changeHandler} name="rating" value={stars}
-             id={`${stars}-stars`} type="radio"/>
+        id={`${stars}-stars`} type="radio"
+      />
       <label id={`${stars}-stars__label`} htmlFor={`${stars}-stars`} className="reviews__rating-label form__rating-label" title={title}>
         <svg className="form__star-image" width="37" height="33">
           <use xlinkHref="#icon-star"></use>
@@ -41,12 +42,12 @@ export function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
     evt.preventDefault();
     setComment(evt.target.value);
     setError(null);
-  }
+  };
   const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
     evt.preventDefault();
     setRating(+evt.target.value);
     setError(null);
-  }
+  };
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -67,10 +68,12 @@ export function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
     )).unwrap()
       .then(
         () => {
-          setComment("");
+          setComment('');
           setRating(0);
         })
-      .catch((err) => {setError(err.message)})
+      .catch((err: {message: string}) => {
+        setError(err.message);
+      });
   };
 
   return (
@@ -85,9 +88,9 @@ export function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
           <RatingInput stars={1} title={'terribly'} changeHandler={handleRatingChange}/>
         </div>
         <textarea className="reviews__textarea form__textarea" id="review" name="review"
-                  placeholder="Tell how was your stay, what you like and what can be improved"
-                  onChange={handleCommentChange}
-                  value={comment}
+          placeholder="Tell how was your stay, what you like and what can be improved"
+          onChange={handleCommentChange}
+          value={comment}
         >
         </textarea>
         <div className="reviews__button-wrapper">
@@ -96,7 +99,8 @@ export function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
             describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
           </p>
           <button className="reviews__submit form__submit button" type="submit"
-                  disabled={!isSubmitButtonActive}>Submit
+            disabled={!isSubmitButtonActive}
+          >Submit
           </button>
         </div>
         {error && <p className="review-send__error">{error}</p>}

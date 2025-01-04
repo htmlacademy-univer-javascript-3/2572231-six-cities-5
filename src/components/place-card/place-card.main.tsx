@@ -17,7 +17,7 @@ export type PlaceCardProps = {
 
 export function PlaceCard(props: PlaceCardProps): JSX.Element {
   const {onMouseEnter, onMouseLeave} = props;
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authStatus = useAppSelector(authStatusSelector);
 
@@ -26,14 +26,14 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
   const handleFavoriteClick = () => {
     if (authStatus !== Auth.Auth) {
       navigate(AppRoute.Login);
-      return
+      return;
     }
     if (offer === null) {
-      return // unreachable
+      return; // unreachable
     }
     dispatch(updateFavoriteStatus({id: offer.id, isFavorite: !offer.isFavorite}));
     setOffer({...offer, isFavorite: !offer.isFavorite});
-  }
+  };
 
   return (
     <article className="cities__card place-card" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>

@@ -8,7 +8,8 @@ import {useNavigate, useParams} from 'react-router-dom';
 import NotFound from '@pages/not-found/not-found.tsx';
 import {
   isNearbyOffersLoadingSelector,
-  isOfferInfoLoadingSelector, isReviewsLoadingSelector,
+  isOfferInfoLoadingSelector,
+  isReviewsLoadingSelector,
   nearbyOffersLoadingErrorSelector,
   nearbyOffersSelector,
   offerInfoLoadingErrorSelector,
@@ -30,18 +31,21 @@ import {setOfferInfo, setOfferInfoLoading} from '@store/offer-data/offer-data.ts
 const MAX_NEARBY_OFFERS = 3;
 
 function Offer(): JSX.Element {
-  const offerId = useParams<{id: string}>().id;
+  const offerId = useParams<{ id: string }>().id;
 
-  if (!offerId) {
-    return <NotFound/>;
-  }
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (offerId === undefined) {
+      return;
+    }
+
     dispatch(getOffer(offerId));
-    dispatch(setOfferInfoLoading(true))
+    dispatch(setOfferInfoLoading(true));
     dispatch(getReviews(offerId));
     dispatch(getNearbyOffers(offerId));
-  }, [offerId])
+  }, [dispatch, offerId]);
 
   const offer = useAppSelector(offerInfoSelector);
   const isOfferLoading = useAppSelector(isOfferInfoLoadingSelector);
@@ -52,65 +56,53 @@ function Offer(): JSX.Element {
   const nearbyOffers = useAppSelector(nearbyOffersSelector);
   const isNearbyOffersLoading = useAppSelector(isNearbyOffersLoadingSelector);
   const nearbyOffersLoadingError = useAppSelector(nearbyOffersLoadingErrorSelector);
-
   const authStatus = useAppSelector(authStatusSelector);
-
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate();
+  const memoizedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS), [nearbyOffers]);
 
   const handleFavoriteClick = () => {
     if (authStatus !== Auth.Auth) {
       navigate(AppRoute.Login);
-      return
+      return;
     }
     if (offer === null) {
-      return // unreachable
+      return; // unreachable
     }
     dispatch(updateFavoriteStatus({id: offer.id, isFavorite: !offer.isFavorite}));
-    dispatch(setOfferInfo({...offer, isFavorite: !offer.isFavorite}))
-  }
+    dispatch(setOfferInfo({...offer, isFavorite: !offer.isFavorite}));
+  };
 
-  const memoizedNearbyOffers = useMemo(() => nearbyOffers.slice(0, MAX_NEARBY_OFFERS), [nearbyOffers, offer]);
+  let content: JSX.Element;
+
 
   if (isOfferLoading) {
-    return (
-    <div className="page">
-      <Header/>
-      <main className="page__main page__main--offer">
-        <Spinner/>
-      </main>
-    </div>
-    )
-  }
+    content = <Spinner/>;
+  } else if (offerLoadingError) {
+    content = <Alert message={offerLoadingError}/>;
+  } else if (offer === null) {
+    content = <NotFound/>;
+  } else {
+    const ratingPercentage = `${(Math.round(offer.rating) * 20)}%`;
 
-  if (offerLoadingError) {
-    return (
-      <div className="page">
-        <Header/>
-        <main className="page__main page__main--offer">
-          <Alert message={offerLoadingError}></Alert>
-        </main>
-      </div>
-    )
-  }
+    let reviewsContent: JSX.Element;
+    if (isReviewsLoading) {
+      reviewsContent = <Spinner/>;
+    } else if (reviewsLoadingError) {
+      reviewsContent = <Alert message={reviewsLoadingError}/>;
+    } else {
+      reviewsContent = <ReviewsList reviews={reviews}/>;
+    }
 
-  if (offer === null) {
-    return (
-      <div className="page">
-        <Header/>
-        <main className="page__main page__main--offer">
-          <NotFound/>
-        </main>
-      </div>
-    )
-  }
+    let nearbyOffersContent: JSX.Element;
+    if (isNearbyOffersLoading) {
+      nearbyOffersContent = <Spinner/>;
+    } else if (nearbyOffersLoadingError) {
+      nearbyOffersContent = <Alert message={nearbyOffersLoadingError}/>;
+    } else {
+      nearbyOffersContent = <OffersList offers={memoizedNearbyOffers}/>;
+    }
 
-  const ratingPercentage = `${(Math.round(offer.rating) * 20)}%`;
-
-  return (
-    <div className="page">
-      <Header/>
-      <main className="page__main page__main--offer">
+    content = (
+      <>
         <section className="offer">
           <OfferGallery images={offer.images}/>
           <div className="offer__container container">
@@ -136,7 +128,9 @@ function Offer(): JSX.Element {
                 <span className="offer__rating-value rating__value">{offer.rating}</span>
               </div>
               <ul className="offer__features">
-                <li className="offer__feature offer__feature--entire">{offer.type[0].toUpperCase() + offer.type.slice(1)}</li>
+                <li className="offer__feature offer__feature--entire">
+                  {offer.type[0].toUpperCase() + offer.type.slice(1)}
+                </li>
                 <li className="offer__feature offer__feature--bedrooms">{offer.bedrooms} Bedrooms</li>
                 <li className="offer__feature offer__feature--adults">Max {offer.maxAdults} adults</li>
               </ul>
@@ -147,7 +141,7 @@ function Offer(): JSX.Element {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  { offer.goods.map((good) => (
+                  {offer.goods.map((good) => (
                     <li className="offer__inside-item" key={good}>
                       {good}
                     </li>))}
@@ -171,12 +165,12 @@ function Offer(): JSX.Element {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
-                {
-                  isReviewsLoading ? <Spinner/> :
-                  reviewsLoadingError ? <Alert message={reviewsLoadingError}/> :
-                  <ReviewsList reviews={reviews}/>
-                }
+                <h2 className="reviews__title">Reviews &middot;
+                  <span className="reviews__amount">
+                    {reviews.length}
+                  </span>
+                </h2>
+                {reviewsContent}
                 {
                   authStatus === Auth.Auth && <ReviewForm offerId={offer.id}/>
                 }
@@ -188,13 +182,18 @@ function Offer(): JSX.Element {
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            {
-              isNearbyOffersLoading ? <Spinner/> :
-              nearbyOffersLoadingError ? <Alert message={nearbyOffersLoadingError}/> :
-              <OffersList offers={memoizedNearbyOffers}/>
-            }
+            {nearbyOffersContent}
           </section>
         </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="page">
+      <Header/>
+      <main className="page__main page__main--offer">
+        {content}
       </main>
     </div>
   );

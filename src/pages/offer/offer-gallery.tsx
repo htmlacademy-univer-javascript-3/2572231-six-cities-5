@@ -23,4 +23,5 @@ function OfferGallery({images}: OfferGalleryProps) {
   );
 }
 
-export default memo(OfferGallery);
+const OfferGalleryMemo = memo(OfferGallery);
+export default OfferGalleryMemo;

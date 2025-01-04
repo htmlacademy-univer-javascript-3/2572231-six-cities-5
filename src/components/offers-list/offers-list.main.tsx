@@ -21,4 +21,5 @@ function OffersList({offers, onActiveOfferChange}: OffersListProps): JSX.Element
   );
 }
 
-export default memo(OffersList)
+const OfferListMemo = memo(OffersList);
+export default OfferListMemo;

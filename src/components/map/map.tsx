@@ -57,4 +57,5 @@ function Map({city, offers, selectedOfferId}: MapProps): JSX.Element {
   );
 }
 
-export default memo(Map);
+const MapMemo = memo(Map);
+export default MapMemo;

@@ -14,7 +14,7 @@ export type PlaceCardProps = {
 }
 
 export function PlaceCard(props: PlaceCardProps): JSX.Element {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const authStatus = useAppSelector(authStatusSelector);
 
@@ -23,14 +23,14 @@ export function PlaceCard(props: PlaceCardProps): JSX.Element {
   const handleFavoriteClick = () => {
     if (authStatus !== Auth.Auth) {
       navigate(AppRoute.Login);
-      return
+      return;
     }
     if (offer === null) {
-      return // unreachable
+      return; // unreachable
     }
     dispatch(updateFavoriteStatus({id: offer.id, isFavorite: !offer.isFavorite}));
     setOffer({...offer, isFavorite: !offer.isFavorite});
-  }
+  };
 
   return (
     <article className="near-places__card place-card">

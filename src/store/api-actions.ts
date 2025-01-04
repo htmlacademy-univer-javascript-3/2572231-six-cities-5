@@ -22,7 +22,7 @@ export const getOffers = createAsyncThunk<Offer[], undefined, {
   'offers/get',
   async (_arg, {extra: api}) => {
     const response = await api.get<Offer[]>(APIRoute.Offers);
-    return response.data
+    return response.data;
   },
 );
 
@@ -34,7 +34,7 @@ export const getOffer = createAsyncThunk<OfferExtendedInfo, string, {
   'offers/getExtendedInfo',
   async (id, {extra: api}) => {
     const response = await api.get<OfferExtendedInfo>(`${APIRoute.Offers}/${id}`);
-    return response.data
+    return response.data;
   },
 );
 
@@ -46,7 +46,7 @@ export const getNearbyOffers = createAsyncThunk<Offer[], string, {
   'offers/getNearby',
   async (id, {extra: api}) => {
     const response = await api.get<Offer[]>(`${APIRoute.Offers}/${id}/nearby`);
-    return response.data
+    return response.data;
   },
 );
 
@@ -58,18 +58,18 @@ export const getReviews = createAsyncThunk<Review[], string, {
   'comments/get',
   async (id, {extra: api}) => {
     const response = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
-    return response.data
+    return response.data;
   },
 );
 
-export const addReview = createAsyncThunk<Review, {offerId: string, comment: string, rating: number}, {
+export const addReview = createAsyncThunk<Review, {offerId: string; comment: string; rating: number}, {
   state: State;
   extra: AxiosInstance;
 }>(
   'comments/add',
   async ({comment, rating, offerId}, {extra: api}) => {
-    const {data} = await api.post<Review>(`comments/${offerId}`, {comment: comment, rating: rating});
-    return data;
+    const response = await api.post<Review>(`comments/${offerId}`, {comment: comment, rating: rating});
+    return response.data;
   }
 );
 
@@ -81,11 +81,11 @@ export const getFavoriteOffers = createAsyncThunk<Offer[], undefined, {
   'favorite/get',
   async (_arg, {extra: api}) => {
     const response = await api.get<Offer[]>(APIRoute.Favorites);
-    return response.data
+    return response.data;
   },
 );
 
-export const updateFavoriteStatus = createAsyncThunk<OfferExtendedInfo, {id: string, isFavorite: boolean}, {
+export const updateFavoriteStatus = createAsyncThunk<OfferExtendedInfo, {id: string; isFavorite: boolean}, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -93,20 +93,20 @@ export const updateFavoriteStatus = createAsyncThunk<OfferExtendedInfo, {id: str
   'favorite/update',
   async ({id, isFavorite}, {extra: api}) => {
     const response = await api.post<OfferExtendedInfo>(`${APIRoute.Favorites}/${id}/${isFavorite ? '1' : '0'}`);
-    return response.data
+    return response.data;
   },
 );
 
-export const login = createAsyncThunk<AuthenticatedUser, {email: string, password: string}, {
+export const login = createAsyncThunk<AuthenticatedUser, {email: string; password: string}, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'user/login',
   async ({email, password}, {extra: api}) => {
-    const response = await api.post(APIRoute.Login, {email, password});
+    const response = await api.post<AuthenticatedUser>(APIRoute.Login, {email, password});
     saveToken(response.data.token);
-    return response.data
+    return response.data;
   },
 );
 
@@ -119,8 +119,7 @@ export const logout = createAsyncThunk<void, undefined, {
   async (_arg, {extra: api}) => {
     try {
       await api.delete(APIRoute.Logout);
-    }
-    finally {
+    } finally {
       dropToken();
     }
   },
@@ -134,9 +133,9 @@ export const checkAuth = createAsyncThunk<AuthenticatedUser | null, undefined, {
   'user/checkAuth',
   async (_arg, {extra: api}) => {
     try {
-      const response = await api.get(APIRoute.Login);
+      const response = await api.get<AuthenticatedUser>(APIRoute.Login);
       return response.data;
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   },
