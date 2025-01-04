@@ -1,11 +1,12 @@
 import { Review as ReviewT } from '@type/offers.ts';
+import {getMonthAndYear} from '../../helpers.ts';
 
 type ReviewItemProps = {
   review: ReviewT;
 };
 
 function Rating({ratingValue}: {ratingValue: number}): JSX.Element {
-  const percentage = `${Math.round((ratingValue / 5) * 100)}%`;
+  const percentage = `${(Math.round(ratingValue) * 20)}%`;
   return (
     <div className="reviews__rating rating">
       <div className="reviews__stars rating__stars">
@@ -36,7 +37,7 @@ export function Review({ review }: ReviewItemProps): JSX.Element {
       <div className="reviews__info">
         <Rating ratingValue={rating}/>
         <p className="reviews__text">{comment}</p>
-        <time className="reviews__time" dateTime={date}>{date}</time>
+        <time className="reviews__time" dateTime={date}>{getMonthAndYear(date)}</time>
       </div>
     </li>
   );

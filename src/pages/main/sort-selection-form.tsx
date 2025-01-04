@@ -11,11 +11,12 @@ const SortTypes: SortType[] = Object.values(SortType)
 
 type SortFormProps = {
   onSortChange: (sortingType: SortType) => void;
+  defaultSortType: SortType;
 }
 
-function SortForm({onSortChange}: SortFormProps): JSX.Element {
+function SortForm({onSortChange, defaultSortType}: SortFormProps): JSX.Element {
   const [isActive, setIsActive] = useState(false);
-  const [selectedSort, setSelectedSort] = useState(SortType.Popular);
+  const [selectedSort, setSelectedSort] = useState(defaultSortType);
 
   const handleSortSelection = (option: SortType) => {
     setSelectedSort(option);

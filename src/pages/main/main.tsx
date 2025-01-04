@@ -3,15 +3,15 @@ import OffersList from '@components/offers-list/offers-list.main.tsx';
 import Map from '@components/map/map.tsx';
 import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
 import CitiesList from '@components/cities-list/cities-list.tsx';
-import {Cities} from '@const/cities';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import SortForm, {SortType} from '@pages/main/sort-selection-form.tsx';
 import {getOffers} from '@store/api-actions.ts';
-import {citySelector} from '@store/main-page-data/selectors.ts';
+import {availableCitiesSelector, citySelector, currentSortTypeSelector} from '@store/main-page-data/selectors.ts';
 import {offersLoadingErrorSelector, offersLoadingSelector, offersSelector} from '@store/offers-data/selectors.ts';
 import Spinner from '@components/spinner/spinner.tsx';
 import {userSelector} from '@store/user-data/selectors.ts';
 import {Alert} from '@components/alert/alert.tsx';
+import {setSortType} from '@store/main-page-data/main-page-data.ts';
 
 
 function Main(): JSX.Element {
@@ -19,14 +19,15 @@ function Main(): JSX.Element {
 
   const user = useAppSelector(userSelector);
 
+  const offers = useAppSelector(offersSelector);
+  const availableCities = useAppSelector(availableCitiesSelector);
+  const city = useAppSelector(citySelector);
+  const selectedSort = useAppSelector(currentSortTypeSelector);
+
   useEffect(() => {
     dispatch(getOffers())
-  }, [user])
+  }, [user, city])
 
-  const offers = useAppSelector(offersSelector);
-  const city = useAppSelector(citySelector);
-
-  const [selectedSort, setSelectedSort] = useState(SortType.Popular);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   const onActiveOfferChange = useCallback((offerId: string | null) => setActiveOfferId(offerId), []);
@@ -52,7 +53,7 @@ function Main(): JSX.Element {
   }, [city, offers, selectedSort]);
 
   const handleSortChange = (selectedSort: SortType) => {
-    setSelectedSort(selectedSort)
+    dispatch(setSortType(selectedSort));
   };
 
 
@@ -67,7 +68,7 @@ function Main(): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-           <CitiesList cities={Cities}/>
+           <CitiesList cities={availableCities}/>
           </section>
         </div>
         <div className="cities">
@@ -91,7 +92,7 @@ function Main(): JSX.Element {
                 <section className="cities__places places">
                   <h2 className="visually-hidden">Places</h2>
                   <b className="places__found">{`${visibleOffers.length} places to stay in ${city.name}`}</b>
-                  <SortForm onSortChange={handleSortChange} />
+                  <SortForm onSortChange={handleSortChange} defaultSortType={selectedSort} />
                   <OffersList offers={visibleOffers} onActiveOfferChange={onActiveOfferChange}/>
                 </section>
                 <div className="cities__right-section">

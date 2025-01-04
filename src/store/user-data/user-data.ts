@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {Namespace} from '@store/namespace.ts';
 import { AuthenticatedUser } from '@type/user';
 import {Auth} from '@type/auth.ts';
@@ -17,14 +17,7 @@ const initialState: UserData = {
 export const userData = createSlice({
   name: Namespace.User,
   initialState,
-  reducers: {
-    setAuthStatus: (state, action: PayloadAction<Auth>) => {
-      state.authStatus = action.payload;
-    },
-    setUser: (state, action: PayloadAction<AuthenticatedUser>) => {
-      state.user = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(login.rejected, (state) => {
       state.authStatus = Auth.NoAuth;
@@ -57,4 +50,5 @@ export const userData = createSlice({
   },
 });
 
-export const {setAuthStatus, setUser} = userData.actions;
+
+export const {} = userData.actions;

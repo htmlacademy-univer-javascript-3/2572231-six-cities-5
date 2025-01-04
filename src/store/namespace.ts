@@ -1,6 +1,6 @@
 export enum Namespace {
-  User = 'USER',
-  Offers = 'OFFERS',
-  MainPage = 'MAIN_PAGE',
-  Offer = 'OFFER',
+  User = 'User',
+  Offers = 'Offers',
+  MainPage = 'MainPage',
+  Offer = 'Offer',
 }

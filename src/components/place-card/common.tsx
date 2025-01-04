@@ -23,7 +23,7 @@ export function BookmarkButton({isActive, onClick}: BookMarkButtonProps): JSX.El
 }
 
 export function Rating({ratingValue}: {ratingValue: number}): JSX.Element {
-  const percentage = `${Math.round((ratingValue / 5) * 100)}%`;
+  const percentage = `${(Math.round(ratingValue) * 20)}%`;
   return (
     <div className="place-card__rating rating">
       <div className="place-card__stars rating__stars">

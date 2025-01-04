@@ -11,23 +11,24 @@ import {PrivateRoute} from '@components/private-route/private-route.tsx';
 import {checkAuth, getFavoriteOffers} from '@store/api-actions.ts';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
-import {userSelector} from '@store/user-data/selectors.ts';
+import {authStatusSelector} from '@store/user-data/selectors.ts';
+import {Auth} from '@type/auth.ts';
 
 
 function App(): JSX.Element {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(userSelector);
+  const authStatus = useAppSelector(authStatusSelector);
 
   useEffect(() => {
     dispatch(checkAuth())
   }, []);
 
   useEffect(() => {
-    if (user !== null)
+    if (authStatus == Auth.Auth)
     {
       dispatch(getFavoriteOffers());
     }
-  }, [user]);
+  }, [authStatus]);
 
   return (
     <BrowserRouter>

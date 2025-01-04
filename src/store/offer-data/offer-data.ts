@@ -37,23 +37,8 @@ export const offerData = createSlice({
         setOfferInfo: (state, action: PayloadAction<OfferExtendedInfo>) => {
             state.offerInfo = action.payload;
         },
-        setReviews: (state, action: PayloadAction<Review[]>) => {
-            state.reviews = action.payload;
-        },
-        setNearbyOffers: (state, action: PayloadAction<Offer[]>) => {
-            state.nearbyOffers = action.payload;
-        },
         setOfferInfoLoading: (state, action: PayloadAction<boolean>) => {
             state.isOfferInfoLoading = action.payload;
-        },
-        setReviewsLoading: (state, action: PayloadAction<boolean>) => {
-            state.isReviewsLoading = action.payload;
-        },
-        setNearbyOffersLoading: (state, action: PayloadAction<boolean>) => {
-            state.isNearbyOffersLoading = action.payload;
-        },
-        setReviewFormActive: (state, action: PayloadAction<boolean>) => {
-            state.isReviewFormActive = action.payload;
         },
     },
     extraReducers(builder) {
@@ -106,4 +91,4 @@ export const offerData = createSlice({
     },
 });
 
-export const {setOfferInfo, setReviews, setOfferInfoLoading, setReviewsLoading, setNearbyOffersLoading} = offerData.actions;
+export const {setOfferInfo, setOfferInfoLoading} = offerData.actions;

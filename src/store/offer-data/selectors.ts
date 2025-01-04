@@ -11,4 +11,3 @@ export const offerInfoLoadingErrorSelector = (state: State) => state[Namespace.O
 export const reviewsLoadingErrorSelector = (state: State) => state[Namespace.Offer].reviewsLoadingError;
 export const nearbyOffersLoadingErrorSelector = (state: State) => state[Namespace.Offer].nearbyOffersLoadingError;
 export const isReviewFormActiveSelector = (state: State) => state[Namespace.Offer].isReviewFormActive;
-export const reviewFormErrorSelector = (state: State) => state[Namespace.Offer].reviewFormError;

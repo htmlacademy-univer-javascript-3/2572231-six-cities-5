@@ -105,6 +105,8 @@ function Offer(): JSX.Element {
     )
   }
 
+  const ratingPercentage = `${(Math.round(offer.rating) * 20)}%`;
+
   return (
     <div className="page">
       <Header/>
@@ -128,7 +130,7 @@ function Offer(): JSX.Element {
               </div>
               <div className="offer__rating rating">
                 <div className="offer__stars rating__stars">
-                  <span style={{width: `calc(100% / 5 * ${offer.rating})`}}></span>
+                  <span style={{width: ratingPercentage}}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
                 <span className="offer__rating-value rating__value">{offer.rating}</span>

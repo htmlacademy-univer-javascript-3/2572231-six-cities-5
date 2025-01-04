@@ -1,24 +1,28 @@
 import {LoginForm} from '@pages/login/login-form.tsx';
-import {useAppSelector} from '@hooks/index.ts';
-import {citySelector} from '@store/main-page-data/selectors.ts';
+import {useAppDispatch, useAppSelector} from '@hooks/index.ts';
+import {availableCitiesSelector} from '@store/main-page-data/selectors.ts';
 import Header from '@components/header/header.tsx';
 import {AppRoute} from '@const/app-routes.ts';
 import {Link, useNavigate} from 'react-router-dom';
 import {authStatusSelector} from '@store/user-data/selectors.ts';
 import {Auth} from '@type/auth.ts';
-import {useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
+import {setCity} from '@store/main-page-data/main-page-data.ts';
 
 function Login(): JSX.Element {
-  const currentCity = useAppSelector(citySelector);
+  const availableCities = useAppSelector(availableCitiesSelector);
   const authStatus = useAppSelector(authStatusSelector);
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(()=> {
     if (authStatus === Auth.Auth) {
       navigate(AppRoute.Main);
     }
   }, [authStatus]);
+
+  const cityToShow = useMemo(() => availableCities[Math.floor(Math.random() * availableCities.length)], []);
 
   return (
     <div className="page page--gray page--login">
@@ -31,8 +35,8 @@ function Login(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to={AppRoute.Main}>
-                <span>{currentCity.name}</span>
+              <Link className="locations__item-link" to={AppRoute.Main} onClick={() => {dispatch(setCity(cityToShow))}}>
+                <span>{cityToShow.name}</span>
               </Link>
             </div>
           </section>

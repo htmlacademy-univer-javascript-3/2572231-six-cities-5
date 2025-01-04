@@ -11,7 +11,7 @@ export type MainPageData = {
 };
 
 const initialState: MainPageData = {
-    city: Cities[0],
+    city: Cities[1],
     availableCities: Cities,
     currentSortType: SortType.Popular,
 };
